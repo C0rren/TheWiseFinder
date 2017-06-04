@@ -46,8 +46,6 @@ select{
   border: 0px !important;
 }
 
-
-
 .header{
   text-align:center;
   padding-top: 40px;
@@ -102,8 +100,8 @@ select{
 }
 
 .personDiv:hover{
-  border: 2px orange solid !important;
-  color:orange;
+  border: 2px #ff9541 solid !important;
+  color: #ff9541;
 }
 
 

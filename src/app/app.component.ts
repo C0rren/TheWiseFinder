@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Person } from './person';
-import { PersonDetailComponent } from './person-detail.component';
 import { FormsModule }   from '@angular/forms';
 import { OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
@@ -66,7 +65,8 @@ import { Query } from './query';
               </ng-container> 
             </div>
           </ng-container>            
-        </ng-container>              
+        </ng-container> 
+                     
       </div>  
     </div>
 
