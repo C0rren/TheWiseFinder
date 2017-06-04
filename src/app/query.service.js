@@ -66,6 +66,10 @@ var QueryService = (function () {
         else if (this._query.sorting === "Name, Descending") {
             return "name.desc";
         }
+        else {
+            //not really required but might be good for future security
+            return "name.score";
+        }
     };
     return QueryService;
 }());

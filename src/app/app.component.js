@@ -19,10 +19,9 @@ var AppComponent = (function () {
         this.title = 'The Wise Finder';
         this.hitsPerPage = 5;
         this.sorting = "Relevance";
+        this.numberOfHitsChoices = [5, 10, 15, 20];
+        this.sortingChoices = ["Relevance", "Name, Ascending", "Name, Descending"];
     }
-    AppComponent.prototype.onSelect = function (person) {
-        this.selectedPerson = person;
-    };
     AppComponent.prototype.ngOnInit = function () {
         this.resetVars(); //(re)set some variables. This will always be called on a new search so it needs its own method
     };
@@ -31,7 +30,6 @@ var AppComponent = (function () {
         this.persons = [];
         this.numberOfHits = null;
         this.numberOfPages = null;
-        this.selectedPerson = null;
         this.spellSuggestions = [];
         this.userInput = "";
         this._queryService.setPage(1);
@@ -55,6 +53,7 @@ var AppComponent = (function () {
         event.preventDefault();
         //ask the personService to perform the API query
         this._queryService.setPage(1);
+        this._queryService.setHitsPerPage(this.hitsPerPage);
         this._queryService.updateSearchQuery(this.userInput);
         console.log(this._queryService.getQuery());
         this.getAllData();
@@ -81,21 +80,20 @@ var AppComponent = (function () {
             this.pages[i] = i + 1;
         }
     };
-    AppComponent.prototype.updateHitsPerPage = function (n) {
-        this.hitsPerPage = n;
-        this._queryService.setHitsPerPage(n);
-        if (this.persons.length > 0) {
-            //only redo the search if we actually have some hits already. Otherwise we'll just set up the hitsperpage variable.
-            this.search();
-        }
-    };
     AppComponent.prototype.correctSpelling = function (suggestion) {
         this.resetVars();
         this.userInput = suggestion;
         this.search();
     };
-    AppComponent.prototype.changeSorting = function (sortMethod) {
-        this.sorting = sortMethod;
+    AppComponent.prototype.updatedHitsPerPage = function () {
+        //this.hitsPerPage is bound with ngModel from the select, this is just to let the queryservice know we want a new query with the updated hits per page.  
+        if (this.persons.length > 0) {
+            //only redo the search if we actually have some hits already. Otherwise we'll just set up the hitsperpage variable.
+            this.search();
+        }
+    };
+    AppComponent.prototype.updatedSorting = function () {
+        //this.sorting is bound with ngModel from the select, this is just to let the queryservice know we want a new query with the updated sorting.    
         this._queryService.setSorting(this.sorting);
         if (this.persons.length > 0) {
             this.search();
@@ -106,7 +104,7 @@ var AppComponent = (function () {
 AppComponent = __decorate([
     core_1.Component({
         selector: 'my-app',
-        template: "\n    <h1>{{title}}</h1>\n    <form #f=\"ngForm\" (ngSubmit)=\"search()\" novalidate>\n      <input name=\"first\" [(ngModel)]=\"userInput\" required #first=\"ngModel\" placeholder = \"Enter Search Query Here\">\n      <button>Submit</button>\n    </form>\n\n    <span *ngIf=\"numberOfHits != null\" class=\"badge\">Your Search Generated {{ numberOfHits }} hits.</span>\n\n    <div *ngIf=\"spellSuggestions.length > 0\" class=\"badge\"> \n      <div> Did you perhaps intend to search for: </div>\n      <ul>\n        <li *ngFor=\"let suggestion of spellSuggestions\" (click)=\"correctSpelling(suggestion)\">\n          <div> {{ suggestion }} </div>\n        </li>\n      </ul>\n    </div>\n\n    <div class=\"dropdown\">\n      <button class=\"dropbtn\">Hits Per Page: {{ hitsPerPage }}</button>\n      <div class=\"dropdown-content\">\n        <a (click)=\"updateHitsPerPage(5)\">5</a>\n        <a (click)=\"updateHitsPerPage(10)\">10</a>\n        <a (click)=\"updateHitsPerPage(15)\">15</a>\n        <a (click)=\"updateHitsPerPage(20)\">20</a>\n      </div>\n    </div>\n\n    <div class=\"dropdown\">\n      <button class=\"dropbtn\">Sort By: {{ sorting }}</button>\n      <div class=\"dropdown-content\">\n        <a (click)=\"changeSorting('Relevance')\">Relevance</a>\n        <a (click)=\"changeSorting('Name, Ascending')\">Name, Ascending</a>\n        <a (click)=\"changeSorting('Name, Descending')\">Name, Descending</a>        \n      </div>\n    </div>\n\n    <ul class=\"persons\">\n      <li *ngFor=\"let person of persons\" (click)=\"onSelect(person)\">\n        <span class=\"badge\">{{person.firstname}}</span> {{person.city}}        \n      </li>      \n      <person-detail [person]=\"selectedPerson\"></person-detail>\n    </ul>\n\n    <li *ngFor=\"let page of pages\" (click)=\"changePage(page)\">\n      <button class=\"badge\">{{page}}</button>\n    </li>\n    ",
+        template: "\n    <div class=\"container\">\n      <div class=\"main\">\n        <section class=\"header\">\n          <h1 class = \"title\">{{title}}</h1>\n        </section>\n\n        <div class=\"row padded\">\n          <div class=\"three columns\">\n            <label for=\"sortingSelect\">Sort By: </label>\n            <select class=\"form-control\" required [(ngModel)]=\"sorting\" class=\"u-full-width\" (change)=\"updatedSorting()\">\n              <option *ngFor=\"let sort of sortingChoices\" [ngValue]=\"sort\">{{sort}}</option>\n            </select>\n          </div>\n\n          <div class=\"three columns\">\n            <label for=\"hitsPerPageSelect\">Hits Per Page: </label>\n            <select class=\"form-control\" required [(ngModel)]=\"hitsPerPage\" class=\"u-full-width\" (change)=\"updatedHitsPerPage()\">\n              <option *ngFor=\"let num of numberOfHitsChoices\" [ngValue]=\"num\">{{num}}</option>\n            </select>\n          </div>\n        </div> \n\n        <form class = \"padded\" #f=\"ngForm\" (ngSubmit)=\"search()\" novalidate>\n          <div class=\"row\">\n            <div class=\"twelve columns\">\n              <input id = \"mainSearchWindow\" class=\"u-full-width form-control\" type=\"text\" name=\"first\" [(ngModel)]=\"userInput\" required #first=\"ngModel\" placeholder = \"Search\" >\n            </div>\n          </div>        \n        </form>    \n\n        <div class = \"row\" id = \"numberOfResults\">\n          <div class = \"twelve columns\" *ngIf=\"numberOfHits != null\">Your Search Generated <b>{{ numberOfHits }}</b> hits.</div>\n        </div>\n\n        <div *ngIf=\"spellSuggestions.length > 0\" class=\"row\"> \n          <div class = \"twelve columns\"> Did you perhaps intend to search for: \n            <div *ngFor=\"let suggestion of spellSuggestions\" (click)=\"correctSpelling(suggestion)\">\n              <a>{{ suggestion }}</a>\n            </div>\n          </div>\n        </div>     \n\n        <ng-container *ngFor = \"let person of persons; let i = index\" class=\"row\">\n          <ng-container *ngIf = \"i % 2 === 0\">\n            <div class = \"row padded personRow\">\n              <ng-container *ngFor = \"let j of [0,1]\">\n                <div *ngIf = \"persons[i+j] != undefined\" class = \"six columns personDiv\">\n                  {{persons[i+j].firstname + \" \" + persons[i+j].lastname}}<br>                 \n                  {{persons[i+j].phone}}<br>\n                  {{persons[i+j].email}}\n                </div> \n              </ng-container> \n            </div>\n          </ng-container>            \n        </ng-container>              \n      </div>  \n    </div>\n\n    <div class=\"container searchContainer\">      \n      <div class=\"row Aligner\" *ngIf=\"pages.length > 1\">\n        <div class = \"one column Aligner-item\" id=\"pagesLabel\">Page: </div>\n        <div class = \"one column Aligner-item\" *ngFor=\"let page of pages\" (click)=\"changePage(page)\">\n          <a class=\"pageChange\">{{page}}</a>\n        </div>\n      </div>         \n    </div>\n\n    ",
         styleUrls: ['./app.component.css'],
         providers: [person_service_1.PersonService, query_service_1.QueryService, query_1.Query]
     }),
