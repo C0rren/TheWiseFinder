@@ -71,7 +71,7 @@ import { Query } from './query';
 
     <div class="container searchContainer">      
       <div class="row Aligner" *ngIf="pages.length > 1">
-        <div class = "one column Aligner-item page" id="pagesLabel">Page: </div>
+        <div class = "one column Aligner-item" id="pagesLabel">Page: </div>
         <div class = "one column Aligner-item" *ngFor="let page of pages" (click)="changePage(page)">
           <a [ngClass]="{'bolded': page === currentPage}" class="pageChange page">{{page}}</a>
         </div>
@@ -90,7 +90,7 @@ export class AppComponent{
     private _queryService: QueryService) { }
 
   title = 'The Wise Finder';
-  persons: Person[];
+  persons: Person[] = [];
   numberOfHits: number = null;
   pages: number[] = [];
   numberOfPages: number = null;
@@ -132,7 +132,6 @@ export class AppComponent{
   }
 
   nextPage(): void{
-    //this._queryService.setPage(this._queryService.getPage()+1);
     this.changePage(this._queryService.getPage() + 1);
   }
 
