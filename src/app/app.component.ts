@@ -74,8 +74,7 @@ import { Query } from './query';
       <div class="row Aligner" *ngIf="pages.length > 1">
         <div class = "one column Aligner-item" id="pagesLabel">Page: </div>
         <div class = "one column Aligner-item" *ngFor="let page of pages" (click)="changePage(page)">
-          <a *ngIf = "page === currentPage" class="pageChange"><b>{{page}}</b></a>
-          <a *ngIf = "page != currentPage" class="pageChange">{{page}}</a>
+          <a [ngClass]="{'bolded': page === currentPage}" class="pageChange">{{page}}</a>
         </div>
       </div>         
     </div>
@@ -115,7 +114,7 @@ export class AppComponent implements OnInit {
     this.numberOfPages = null;
     this.spellSuggestions = [];
     this.userInput = "";
-    this._queryService.setPage(1);
+    this.currentPage = 1;
     this._queryService.updateSearchQuery(this.userInput);    
   }
 
@@ -139,7 +138,6 @@ export class AppComponent implements OnInit {
     this._queryService.setPage(1);
     this._queryService.setHitsPerPage(this.hitsPerPage); 
     this._queryService.updateSearchQuery(this.userInput);     
-    console.log(this._queryService.getQuery());
     this.getAllData();
   }     
 

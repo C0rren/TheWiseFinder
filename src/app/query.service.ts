@@ -10,7 +10,6 @@ export class QueryService{
   private _query = new Query();
 
   updateSearchQuery(rawInput: string){
-    console.log("got here, rawInput is: " + rawInput);
     this.setRawQuery(rawInput);
     this.fromRawToQuery(rawInput);  
     this.addPaginationToQuery(this.getPage());  

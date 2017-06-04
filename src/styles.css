@@ -103,6 +103,10 @@ select{
   color: #ff9541;
 }
 
+.bolded{
+  font-weight:bold;
+}
+
 
 .Aligner {
   display: flex;
