@@ -6,7 +6,6 @@ import { QueryService } from './query.service';
 import { PersonService } from './person.service';
 import { Query } from './query';
 
-
 @Component({
   selector: 'my-app',
   template: `
@@ -17,14 +16,14 @@ import { Query } from './query';
         </section>
 
         <div class="row padded">
-          <div class="three columns">
+          <div class="four columns">
             <label for="sortingSelect">Sort By: </label>
             <select class="form-control" required [(ngModel)]="sorting" class="u-full-width" (change)="updatedSorting()">
               <option *ngFor="let sort of sortingChoices" [ngValue]="sort">{{sort}}</option>
             </select>
           </div>
 
-          <div class="three columns">
+          <div class="four columns">
             <label for="hitsPerPageSelect">Hits Per Page: </label>
             <select class="form-control" required [(ngModel)]="hitsPerPage" class="u-full-width" (change)="updatedHitsPerPage()">
               <option *ngFor="let num of numberOfHitsChoices" [ngValue]="num">{{num}}</option>
@@ -41,7 +40,7 @@ import { Query } from './query';
         </form>    
 
         <div class = "row" id = "numberOfResults">
-          <div class = "twelve columns" *ngIf="numberOfHits != null">Your Search Generated <b>{{ numberOfHits }}</b> hits.</div>
+          <div class = "twelve columns" *ngIf="numberOfHits != null">Your Search Generated <b>{{ numberOfHits }}</b> Hits.</div>
         </div>
 
         <div *ngIf="spellSuggestions.length > 0" class="row padded"> 
@@ -69,13 +68,13 @@ import { Query } from './query';
       </div>  
     </div>
 
-    <div class="container searchContainer">      
-      <div class="row Aligner" *ngIf="pages.length > 1">
-        <div class = "one column Aligner-item" id="pagesLabel">Page: </div>
+    <div class="container searchContainer">           
+      <div class="row Aligner right-padded" *ngIf="pages.length > 1">
+        <div class = "two columns Aligner-item" id="pagesLabel">Page: </div>
         <div class = "one column Aligner-item" *ngFor="let page of pages" (click)="changePage(page)">
           <a [ngClass]="{'bolded': page === currentPage}" class="pageChange page">{{page}}</a>
         </div>
-      </div>         
+      </div>
     </div>
 
     `,    
