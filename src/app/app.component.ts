@@ -36,7 +36,7 @@ import { Query } from './query';
         <form class = "padded" #f="ngForm" (ngSubmit)="search()" novalidate>
           <div class="row">
             <div class="twelve columns">
-              <input id = "mainSearchWindow" class="u-full-width form-control" type="text" name="first" [(ngModel)]="userInput" required #first="ngModel" placeholder = "Search" >
+              <input id = "mainSearchWindow" class="u-full-width form-control" type="text" name="first" [(ngModel)]="userInput" required placeholder = "Search" >
             </div>
           </div>        
         </form>    
@@ -45,10 +45,10 @@ import { Query } from './query';
           <div class = "twelve columns" *ngIf="numberOfHits != null">Your Search Generated <b>{{ numberOfHits }}</b> hits.</div>
         </div>
 
-        <div *ngIf="spellSuggestions.length > 0" class="row"> 
+        <div *ngIf="spellSuggestions.length > 0" class="row padded"> 
           <div class = "twelve columns"> Did you perhaps intend to search for: 
             <div *ngFor="let suggestion of spellSuggestions" (click)="correctSpelling(suggestion)">
-              <a>{{ suggestion }}</a>
+              <a><b>{{ suggestion }}</b></a>
             </div>
           </div>
         </div>     
@@ -66,7 +66,7 @@ import { Query } from './query';
             </div>
           </ng-container>            
         </ng-container> 
-                     
+
       </div>  
     </div>
 
@@ -74,7 +74,8 @@ import { Query } from './query';
       <div class="row Aligner" *ngIf="pages.length > 1">
         <div class = "one column Aligner-item" id="pagesLabel">Page: </div>
         <div class = "one column Aligner-item" *ngFor="let page of pages" (click)="changePage(page)">
-          <a class="pageChange">{{page}}</a>
+          <a *ngIf = "page === currentPage" class="pageChange"><b>{{page}}</b></a>
+          <a *ngIf = "page != currentPage" class="pageChange">{{page}}</a>
         </div>
       </div>         
     </div>
@@ -101,6 +102,7 @@ export class AppComponent implements OnInit {
   sorting: string = "Relevance";
   numberOfHitsChoices = [5,10,15,20];
   sortingChoices = ["Relevance", "Name, Ascending", "Name, Descending"];
+  currentPage: number = 1;
 
   ngOnInit(): void {
     this.resetVars(); //(re)set some variables. This will always be called on a new search so it needs its own method
@@ -142,7 +144,8 @@ export class AppComponent implements OnInit {
   }     
 
   changePage(n: number){
-     this._queryService.setPage(n);
+     this.currentPage = n;
+     this._queryService.setPage(this.currentPage);
      this.getPersons(); // Need to do a new query now since we switched page.
   }
 

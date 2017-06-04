@@ -29,8 +29,7 @@ li {
 }
 
 a{
-  cursor:pointer;
-  font-size:2.5em;  
+  cursor:pointer;    
 }
 
 div{
@@ -125,6 +124,10 @@ select{
 
 .padded{
   padding: 0px 10px !important;
+}
+
+.pageChange{
+  font-size:2.5em;
 }
 
 #numberOfResults{
