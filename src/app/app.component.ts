@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Person } from './person';
 import { FormsModule }   from '@angular/forms';
-import { OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { QueryService } from './query.service';
 import { PersonService } from './person.service';
@@ -72,9 +71,9 @@ import { Query } from './query';
 
     <div class="container searchContainer">      
       <div class="row Aligner" *ngIf="pages.length > 1">
-        <div class = "one column Aligner-item" id="pagesLabel">Page: </div>
+        <div class = "one column Aligner-item page" id="pagesLabel">Page: </div>
         <div class = "one column Aligner-item" *ngFor="let page of pages" (click)="changePage(page)">
-          <a [ngClass]="{'bolded': page === currentPage}" class="pageChange">{{page}}</a>
+          <a [ngClass]="{'bolded': page === currentPage}" class="pageChange page">{{page}}</a>
         </div>
       </div>         
     </div>
@@ -84,7 +83,7 @@ import { Query } from './query';
     providers: [PersonService, QueryService, Query]
   })
 
-export class AppComponent implements OnInit {
+export class AppComponent{
 
   constructor(
     private _personService: PersonService,
@@ -92,31 +91,16 @@ export class AppComponent implements OnInit {
 
   title = 'The Wise Finder';
   persons: Person[];
-  numberOfHits: number;
-  pages: number[];
-  numberOfPages: number;
-  spellSuggestions: string[];
-  userInput: string;
+  numberOfHits: number = null;
+  pages: number[] = [];
+  numberOfPages: number = null;
+  spellSuggestions: string[] = [];
+  userInput: string = "";
   hitsPerPage: number = 5;
   sorting: string = "Relevance";
   numberOfHitsChoices = [5,10,15,20];
   sortingChoices = ["Relevance", "Name, Ascending", "Name, Descending"];
   currentPage: number = 1;
-
-  ngOnInit(): void {
-    this.resetVars(); //(re)set some variables. This will always be called on a new search so it needs its own method
-  }  
-
-  resetVars(): void{
-    this.pages = [];
-    this.persons = [];
-    this.numberOfHits = null;
-    this.numberOfPages = null;
-    this.spellSuggestions = [];
-    this.userInput = "";
-    this.currentPage = 1;
-    this._queryService.updateSearchQuery(this.userInput);    
-  }
 
   getAllData(): void{
     this._personService
@@ -168,7 +152,6 @@ export class AppComponent implements OnInit {
   }  
 
   correctSpelling(suggestion: string){
-    this.resetVars();
     this.userInput = suggestion;
     this.search();
   }
